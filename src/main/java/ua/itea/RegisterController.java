@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,7 +19,6 @@ import mySql.MySQLDAOFactory;
 @RequestMapping("/register")
 public class RegisterController {
 	private boolean error = false;
-	private boolean createUser = false;
 	private StringBuilder errorText;
 	private User user;
 	private UserDAO uersDAO;
@@ -27,10 +27,6 @@ public class RegisterController {
 	public ModelAndView getRegisterForm() {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpSession session = attr.getRequest().getSession(true); // true == allow create
-		if (createUser) {
-			createUser = false;
-			return new ModelAndView("redirect:/");
-		}
 		ModelAndView model = new ModelAndView("RegisterView");
 		if (error) {
 			error = false;
@@ -58,13 +54,48 @@ public class RegisterController {
 		return model;
 	}
 
+	@RequestMapping(method = RequestMethod.POST, params = { "login", "password", "password2", "name", "region",
+			"gender", "comment", "acceptOffer" })
+	public ModelAndView registerFormPOST(@RequestParam("login") String login, @RequestParam("password") String password,
+			@RequestParam("password2") String password2, @RequestParam("name") String name,
+			@RequestParam("region") String region, @RequestParam("gender") String gender,
+			@RequestParam("comment") String comment, @RequestParam("acceptOffer") String acceptOffer) {
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+		error = false;
+		errorText = new StringBuilder("<ul>");
+		user = new User(login, password, name, region, convertGenderToBool(gender), comment);
+		DaoFactory df = new MySQLDAOFactory();
+		uersDAO = df.getUserDAO();
+		checkErrors(session, password2, acceptOffer);
+		if (!error) {
+			if (session.getAttribute("login") != null) {
+				if (!uersDAO.updateUser(user, session.getAttribute("login").toString())) {
+					error = true;
+					errorText.append("<li>DataBase error</li>");
+				}
+			} else {
+				if (!uersDAO.insertUser(user)) {
+					error = true;
+					errorText.append("<li>DataBase error</li>");
+				}
+			}
+			session.setAttribute("login", login);
+			session.setAttribute("userName", name);
+			if (!error) {
+				return new ModelAndView("redirect:/");
+			}
+		}
+		return getRegisterForm();
+
+	}
+
 	private boolean convertGenderToBool(String gender) {
 		if (gender.equals("Male")) {
 			return true;
 		} else {
 			return false;
 		}
-
 	}
 
 	private void checkErrors(HttpSession session, String password2, String acceptOffer) {
