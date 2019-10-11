@@ -1,12 +1,8 @@
 package ua.itea;
 
 import java.util.Date;
-
-import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +21,7 @@ public class LoginController {
 	static long failTime = 0;
 	static int errorCounter = 0;
 	long timeBlockLeft = 0;
+	String userName;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView loginGet() {
@@ -58,8 +55,7 @@ public class LoginController {
 						.currentRequestAttributes();
 				HttpSession session = attr.getRequest().getSession(true); // true == allow create
 				session.setAttribute("login", login);
-				//ModelAndView model = new ModelAndView("MainView");
-				// model.setViewName("MainView");
+				session.setAttribute("userName", userName);
 				return new ModelAndView("redirect:/");
 			}
 		}
@@ -69,15 +65,14 @@ public class LoginController {
 	private boolean checkCredials(String login, String password) {
 		boolean loginFailded = true;
 		DaoFactory df = new MySQLDAOFactory();
-		UserDAO uersDAO = df.getUserDAO();
-		if (uersDAO.checkLoginPasswords(login, password)) {
+		UserDAO userDAO = df.getUserDAO();
+		if (userDAO.checkLoginPasswords(login, password)) {
 			errorCounter = 0;
 			loginFailded = false;
-			System.out.println("login acsept");
+			userName = userDAO.getUserByLogin(login).getName();
 		} else {
 			errorCounter++;
 			loginFailded = true;
-			System.out.println("login failed");
 			checkBlock();
 		}
 		return loginFailded;
