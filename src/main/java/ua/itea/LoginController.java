@@ -48,7 +48,8 @@ public class LoginController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, params = { "login", "password" })
-	public ModelAndView loginPost(@RequestParam("login") String login, @RequestParam("password") String password) {
+	public ModelAndView loginPost(@RequestParam("login") String login, 
+			@RequestParam("password") String password) {
 		if (!login.equals("") && !password.equals("")) {
 			if (!checkCredials(login, password)) {
 				ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder
