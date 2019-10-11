@@ -2,11 +2,17 @@ package ua.itea;
 
 import java.util.Date;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import dao.DaoFactory;
 import dao.UserDAO;
 import mySql.MySQLDAOFactory;
@@ -19,10 +25,28 @@ public class LoginController {
 	static int errorCounter = 0;
 	long timeBlockLeft = 0;
 
-	@RequestMapping(method = RequestMethod.GET, value = "/page2", params = { "var" })
-	public String returnString(@RequestParam("var") String var, ModelMap model) {
-		model.addAttribute("msg", "taras");
-		return "HelloPage";
+	@RequestMapping(method = RequestMethod.GET)
+	public String returnString( ModelMap model) {
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+		if (formBlocked) {
+			checkUblock();
+			if (timeBlockLeft > 0) {
+				model.addAttribute("time", timeBlockLeft);
+				return "BlockedFormView";
+			}
+		}
+		else {
+			model.addAttribute("attempt", errorCounter);
+			model.addAttribute("page", "login");
+			if (session.getAttribute("cart_number") != null) {
+				model.addAttribute("items", session.getAttribute("cart_number"));
+			} else {
+				model.addAttribute("items", 0);
+			}
+			return "LoginView";
+		}
+		return null;
 	}
 
 	private boolean checkCredials(String login, String password) {
