@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 import dao.DaoFactory;
 import dao.UserDAO;
@@ -26,27 +27,43 @@ public class LoginController {
 	long timeBlockLeft = 0;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String returnString( ModelMap model) {
+	public ModelAndView loginGet() {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+		ModelAndView model;
 		if (formBlocked) {
 			checkUblock();
 			if (timeBlockLeft > 0) {
-				model.addAttribute("time", timeBlockLeft);
-				return "BlockedFormView";
+				model = new ModelAndView("BlockedFormView");
+				model.addObject("time", timeBlockLeft);
+				return model;
 			}
 		}
-		else {
-			model.addAttribute("attempt", errorCounter);
-			model.addAttribute("page", "login");
-			if (session.getAttribute("cart_number") != null) {
-				model.addAttribute("items", session.getAttribute("cart_number"));
-			} else {
-				model.addAttribute("items", 0);
-			}
-			return "LoginView";
+		model = new ModelAndView("LoginView");
+		model.addObject("attempt", errorCounter);
+		model.addObject("page", "login");
+		if (session.getAttribute("cart_number") != null) {
+			model.addObject("items", session.getAttribute("cart_number"));
+		} else {
+			model.addObject("items", 0);
 		}
-		return null;
+		return model;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, params = { "login", "password" })
+	public ModelAndView loginPost(@RequestParam("login") String login, @RequestParam("password") String password) {
+		if (!login.equals("") && !password.equals("")) {
+			if (!checkCredials(login, password)) {
+				ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder
+						.currentRequestAttributes();
+				HttpSession session = attr.getRequest().getSession(true); // true == allow create
+				session.setAttribute("login", login);
+				//ModelAndView model = new ModelAndView("MainView");
+				// model.setViewName("MainView");
+				return new ModelAndView("redirect:/");
+			}
+		}
+		return loginGet();
 	}
 
 	private boolean checkCredials(String login, String password) {
@@ -56,9 +73,11 @@ public class LoginController {
 		if (uersDAO.checkLoginPasswords(login, password)) {
 			errorCounter = 0;
 			loginFailded = false;
+			System.out.println("login acsept");
 		} else {
 			errorCounter++;
 			loginFailded = true;
+			System.out.println("login failed");
 			checkBlock();
 		}
 		return loginFailded;
