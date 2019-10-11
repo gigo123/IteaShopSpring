@@ -9,16 +9,16 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Favicons -->
-<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href= "<c:url value="/resources/img/favicon.ico" />" type="image/x-icon">
 <link rel="apple-touch-icon" href="img/icon.png">
 
 <!-- ************************* CSS Files ************************* -->
 
 <!-- Vendor CSS -->
-<link rel="stylesheet" href="css/vendor.css">
+<link rel="stylesheet" href="<c:url value="/resources/css/vendor.css"/>" />
 
 <!-- style css -->
-<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="<c:url value="/resources/css/main.css"/>"/>
 </head>
 
 <body>

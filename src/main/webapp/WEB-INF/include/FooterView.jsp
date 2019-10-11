@@ -463,10 +463,10 @@
     <!-- ************************* JS Files ************************* -->
 
     <!-- jQuery JS -->
-    <script src="js/vendor.js"></script>
+    <script src="<c:url value="/resources/js/vendor.js"/>"></script>
 
     <!-- Main JS -->
-    <script src="js/main.js"></script>
+    <script src="<c:url value="/resources/js/main.js"/>"/></script>
 </body>
 
 </html>
