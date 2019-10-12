@@ -23,7 +23,7 @@
 				<c:forEach var="product" items="${requestScope.productList}">
 					<tr id="productRow${product.key.id}">
 						<td class="product-thumbnail text-left"><img
-							src="<c:url value="./resources/productImage/${product.id}.JPG"/>" alt="Product Thumnail"></td>
+							src="<c:url value="./resources/productImage/${product.key.id}.JPG"/>" alt="Product Thumnail"></td>
 						<td class="product-name text-left wide-column">
 							<h3>
 								<a href="product-details.html">${product.key.name}</a>
