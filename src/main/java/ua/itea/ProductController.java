@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,15 +20,32 @@ import mySql.MySQLDAOFactory;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getProductList() {
-		List<Product> products;
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
 		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+		return getWorker(session, "");
+	}
+
+	@RequestMapping(method = RequestMethod.GET, params = { "category" })
+	public ModelAndView getProductListCategory(@RequestParam("category") String category) {
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+		return getWorker(session, category);
+	}
+
+	private ModelAndView getWorker(HttpSession session, String category) {
+		List<Product> products;
 		ModelAndView model = new ModelAndView("ProductsView");
 		DaoFactory df = new MySQLDAOFactory();
 		ProductDAO pd = df.getProductDAO();
-		products = pd.getProductList();
+		if (category.equals("")) {
+			products = pd.getProductList();
+		} else {
+			int intCategory = Integer.parseInt(category);
+			products = pd.getProductByCategory(intCategory);
+		}
 		if (session.getAttribute("login") != null) {
 			model.addObject("login", true);
 			model.addObject("userName", session.getAttribute("userName"));
