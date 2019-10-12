@@ -2,6 +2,9 @@ package ua.itea;
 
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -11,6 +14,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import dao.DaoFactory;
+import dao.ProductDAO;
 import dao.UserDAO;
 import models.User;
 import mySql.MySQLDAOFactory;
@@ -21,7 +25,7 @@ public class RegisterController {
 	private boolean error = false;
 	private StringBuilder errorText;
 	private User user;
-	private UserDAO uersDAO;
+	private UserDAO userDAO;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getRegisterForm() {
@@ -36,9 +40,10 @@ public class RegisterController {
 				model.addObject("login", true);
 			}
 		} else if (session.getAttribute("login") != null) {
-			DaoFactory df = new MySQLDAOFactory();
-			uersDAO = df.getUserDAO();
-			user = uersDAO.getUserByLogin(session.getAttribute("login").toString());
+			@SuppressWarnings("resource")
+			ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
+			userDAO = (UserDAO) context.getBean("UserDAO");
+			user = userDAO.getUserByLogin(session.getAttribute("login").toString());
 			model.addObject("login", true);
 		} else {
 			user = new User();
@@ -65,17 +70,18 @@ public class RegisterController {
 		error = false;
 		errorText = new StringBuilder("<ul>");
 		user = new User(login, password, name, region, convertGenderToBool(gender), comment);
-		DaoFactory df = new MySQLDAOFactory();
-		uersDAO = df.getUserDAO();
+		@SuppressWarnings("resource")
+		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
+		userDAO = (UserDAO) context.getBean("UserDAO");
 		checkErrors(session, password2, acceptOffer);
 		if (!error) {
 			if (session.getAttribute("login") != null) {
-				if (!uersDAO.updateUser(user, session.getAttribute("login").toString())) {
+				if (!userDAO.updateUser(user, session.getAttribute("login").toString())) {
 					error = true;
 					errorText.append("<li>DataBase error</li>");
 				}
 			} else {
-				if (!uersDAO.insertUser(user)) {
+				if (!userDAO.insertUser(user)) {
 					error = true;
 					errorText.append("<li>DataBase error</li>");
 				}
@@ -123,7 +129,7 @@ public class RegisterController {
 			errorText.append("<li>Login field is empty</li>");
 			return;
 		}
-		if (uersDAO.selectEmail(login)) {
+		if (userDAO.selectEmail(login)) {
 			error = true;
 			errorText.append("<li>this email is alredy in use</li>");
 		}

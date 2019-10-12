@@ -40,8 +40,7 @@ public class ProductController {
 	private ModelAndView getWorker(HttpSession session, String category) {
 		List<Product> products;
 		ModelAndView model = new ModelAndView("ProductsView");
-		//DaoFactory df = new MySQLDAOFactory();
-		//ProductDAO pd = df.getProductDAO();
+		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
 		ProductDAO pd=  (ProductDAO) context.getBean("ProductDAO");
 		if (category.equals("")) {

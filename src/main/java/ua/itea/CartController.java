@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -83,8 +85,9 @@ public class CartController {
 		} else {
 			cartMap = new HashMap<Product, Integer>();
 		}
-		DaoFactory df = new MySQLDAOFactory();
-		ProductDAO pd = df.getProductDAO();
+		@SuppressWarnings("resource")
+		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
+		ProductDAO pd=  (ProductDAO) context.getBean("ProductDAO");
 		Product product = pd.getProductById(productId);
 		if (type.equals("buy")) {
 			if (cartMap.containsKey(product)) {

@@ -2,6 +2,9 @@ package ua.itea;
 
 import java.util.Date;
 import javax.servlet.http.HttpSession;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,8 +68,9 @@ public class LoginController {
 
 	private boolean checkCredials(String login, String password) {
 		boolean loginFailded = true;
-		DaoFactory df = new MySQLDAOFactory();
-		UserDAO userDAO = df.getUserDAO();
+		@SuppressWarnings("resource")
+		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
+		UserDAO userDAO =  (UserDAO) context.getBean("UserDAO");
 		if (userDAO.checkLoginPasswords(login, password)) {
 			errorCounter = 0;
 			loginFailded = false;
