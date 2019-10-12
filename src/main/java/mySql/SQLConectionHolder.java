@@ -7,11 +7,22 @@ import java.sql.SQLException;
 public class SQLConectionHolder {
 	private static Connection conn;
 
-	public static Connection getConnection() {
+	private String connString;
+	
+	public String getConnString() {
+		return connString;
+	}
+
+	public void setConnString(String connString) {
+		this.connString = connString;
+	}
+
+	public  Connection getConnection() {
 		if (conn == null)
 			try {
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
-				conn = DriverManager.getConnection("jdbc:mysql://localhost/iteashop?" + "user=root&password=");
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost/iteashop?" + "user=root&password=");
+				conn = DriverManager.getConnection(connString);
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
 				System.out.println(ex.getMessage());
 			} catch (SQLException ex) {
@@ -24,7 +35,7 @@ public class SQLConectionHolder {
 
 	};
 
-	public static void closeConnection() {
+	public void closeConnection() {
 		if (conn != null) {
 			try {
 				conn.close();
