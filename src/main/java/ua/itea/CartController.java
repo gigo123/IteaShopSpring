@@ -10,6 +10,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,7 +25,7 @@ import mySql.MySQLDAOFactory;
 @RequestMapping("/cart")
 public class CartController {
 	HttpSession session;
-	
+
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getCartList() {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -46,11 +48,37 @@ public class CartController {
 		model.addObject("page", "cart");
 		return model;
 	}
+
+	@RequestMapping(method = RequestMethod.POST, params = { "productToBuy", "numberOfGoods" })
+	@ResponseBody
+	public String productBuy(@RequestParam("productToBuy") String productToBuy,
+			@RequestParam("numberOfGoods") String numberOfGoods) {
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		session = attr.getRequest().getSession(true); // true == allow create
+		return cartMapProcessed("buy", Integer.parseInt(productToBuy), Integer.parseInt(numberOfGoods));
+	}
+
+	@RequestMapping(method = RequestMethod.POST, params = { "productToChange", "numberOfGoods" })
+	@ResponseBody
+	public String productBuyCart(@RequestParam("productToChange") String productToChange,
+			@RequestParam("numberOfGoods") String numberOfGoods) {
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		session = attr.getRequest().getSession(true); // true == allow create
+		return cartMapProcessed("change", Integer.parseInt(productToChange), Integer.parseInt(numberOfGoods));
+	}
+
+	@RequestMapping(method = RequestMethod.POST, params = { "productToRemove"})
+	@ResponseBody
+	public String productRemove(@RequestParam("productToRemove") String productToRemove) {
+		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+		session = attr.getRequest().getSession(true); // true == allow create
+		return cartMapProcessed("remove", Integer.parseInt(productToRemove), 0);
+	}
+
 	@SuppressWarnings("unchecked")
-	private void cartMapProcessed(String type, long productId, int numberOfGoods) {
+	private String cartMapProcessed(String type, long productId, int numberOfGoods) {
 		Map<Product, Integer> cartMap;
 		if (session.getAttribute("cart") != null) {
-
 			cartMap = (Map<Product, Integer>) session.getAttribute("cart");
 		} else {
 			cartMap = new HashMap<Product, Integer>();
@@ -73,8 +101,14 @@ public class CartController {
 			cartMap.put(product, numberOfGoods);
 		}
 		session.setAttribute("cart", cartMap);
-		session.setAttribute("cart_number", productsCount(cartMap));
-		return;
+		int count = productsCount(cartMap);
+		session.setAttribute("cart_number", count);
+		if (type.equals("buy")) {
+			return String.valueOf(count);
+		} else {
+			return "{\"numberOfGoods\":\"" + session.getAttribute("cart_number").toString() + "\",\"totalCartSum\":\""
+					+ totalCartSum() + "\"}";
+		}
 	}
 
 	private int productsCount(Map<Product, Integer> cartMap) {
@@ -89,7 +123,6 @@ public class CartController {
 	private int totalCartSum(Map<Product, Integer> cartMap) {
 		int sum = 0;
 		Iterator<Map.Entry<Product, Integer>> itr = cartMap.entrySet().iterator();
-
 		while (itr.hasNext()) {
 			Map.Entry<Product, Integer> entry = itr.next();
 			sum = sum + entry.getKey().getPrice() * entry.getValue();
@@ -101,14 +134,11 @@ public class CartController {
 		Map<Product, Integer> cartMap;
 		int sum = 0;
 		cartMap = (Map<Product, Integer>) session.getAttribute("cart");
-
 		Iterator<Map.Entry<Product, Integer>> itr = cartMap.entrySet().iterator();
-
 		while (itr.hasNext()) {
 			Map.Entry<Product, Integer> entry = itr.next();
 			sum = sum + entry.getKey().getPrice() * entry.getValue();
 		}
-
 		return sum;
 	}
 
