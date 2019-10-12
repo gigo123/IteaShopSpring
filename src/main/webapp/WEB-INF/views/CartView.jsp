@@ -23,7 +23,7 @@
 				<c:forEach var="product" items="${requestScope.productList}">
 					<tr id="productRow${product.key.id}">
 						<td class="product-thumbnail text-left"><img
-							src="./productImage/${product.key.id}.JPG" alt="Product Thumnail"></td>
+							src="<c:url value="./resources/productImage/${product.id}.JPG"/>" alt="Product Thumnail"></td>
 						<td class="product-name text-left wide-column">
 							<h3>
 								<a href="product-details.html">${product.key.name}</a>
@@ -33,10 +33,10 @@
 								<span class="money" id="price${product.key.id}">${product.key.price}</span>
 						</span></td>
 						<td class="product-quantity"><img width="20px"
-							src="./img/-.png" id="imgMinus"
+							src="<c:url value="./resources/img/-.png"/>" id="imgMinus"
 							onclick="minus(${product.key.id})" /> <span
 							id="span${product.key.id}">${product.value}</span> <img
-							width="20px" src="./img/+.png" id="imgPlus"
+							width="20px" src="<c:url value="./resources//img/+.png"/>" id="imgPlus"
 							onclick="plus(${product.key.id})" /></td>
 						<td class="product-total-price"><span
 							class="product-price-wrapper"> <span class="money"
