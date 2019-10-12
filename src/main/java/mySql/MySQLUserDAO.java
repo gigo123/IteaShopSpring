@@ -18,6 +18,15 @@ public class MySQLUserDAO implements dao.UserDAO {
 	private final static String USER_UPDATE_QUERY = "UPDATE  users set  password= ?, name = ?, region = ?, gender = ? , comment = ?"
 			+ " WHERE  login = ?";
 	private final static String SALT = "miniMax";
+	SQLConectionHolder conectionHolder;
+	
+	public SQLConectionHolder getConectionHolder() {
+		return conectionHolder;
+	}
+
+	public void setConectionHolder(SQLConectionHolder conectionHolder) {
+		this.conectionHolder = conectionHolder;
+	}
 
 	@Override
 	public User getUserByID(long id) {
@@ -27,7 +36,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 
 	@Override
 	public boolean checkLoginPasswords(String login, String password) {
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		String pass_Query = "SELECT * FROM users WHERE login = ? AND  password = ?";
 		ResultSet rs = null;
 		PreparedStatement prepSt = null;
@@ -37,10 +46,10 @@ public class MySQLUserDAO implements dao.UserDAO {
 			prepSt.setString(2, hash(password));
 			rs = prepSt.executeQuery();
 			while (rs.next()) {
-				SQLConectionHolder.closeConnection();
+				conectionHolder.closeConnection();
 				return true;
 			}
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -67,16 +76,16 @@ public class MySQLUserDAO implements dao.UserDAO {
 	public boolean selectEmail(String formEmail) {
 		ResultSet rs = null;
 		PreparedStatement prepSt = null;
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		try {
 			prepSt = conn.prepareStatement(SELECT_QUERY);
 			prepSt.setString(1, formEmail);
 			rs = prepSt.executeQuery();
 			while (rs.next()) {
-				SQLConectionHolder.closeConnection();
+				conectionHolder.closeConnection();
 				return true;
 			}
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -102,7 +111,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 		ResultSet rs = null;
 		PreparedStatement prepSt = null;
 		User user = null;
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		try {
 			prepSt = conn.prepareStatement(SELECT_QUERY);
 			prepSt.setString(1, login);
@@ -119,7 +128,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 				user.setGender(rs.getBoolean("gender"));
 				user.setComment(rs.getString("comment"));
 			}
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -136,7 +145,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 	}
 
 	public boolean insertUser(User user) {
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		PreparedStatement prepSt = null;
 		try {
 			prepSt = conn.prepareStatement(INSERT_QUERY);
@@ -147,7 +156,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 			prepSt.setBoolean(5, user.getGender());
 			prepSt.setString(6, user.getComment());
 			prepSt.execute();
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
@@ -164,7 +173,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 	}
 
 	public boolean updateUser(User user, String login) {
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		PreparedStatement prepSt = null;
 		try {
 			prepSt = conn.prepareStatement(USER_UPDATE_QUERY);
@@ -175,7 +184,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 			prepSt.setString(5, user.getComment());
 			prepSt.setString(6, login);
 			prepSt.execute();
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;

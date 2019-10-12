@@ -18,13 +18,13 @@ public class MySQLProductDAO implements ProductDAO {
 	private final static String SELECTID_QUERY = "SELECT * FROM products WHERE id = ?";
 	private final static String SELECTCATEGORY_QUERY = "SELECT * FROM products WHERE category = ?";
 	private final static String SELECTLIST_QUERY = "SELECT * FROM products";
-
+	SQLConectionHolder conectionHolder;
 	@Override
 	public List<Product> getProductList() {
 		List<Product> productList = new ArrayList<Product>();
 		Statement selectStmt = null;
 		ResultSet rs = null;
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		try {
 			selectStmt = conn.createStatement();
 			rs = selectStmt.executeQuery(SELECTLIST_QUERY);
@@ -37,7 +37,7 @@ public class MySQLProductDAO implements ProductDAO {
 				product.setCategory(rs.getInt("category"));
 				productList.add(product);
 			}
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,7 +51,7 @@ public class MySQLProductDAO implements ProductDAO {
 		ResultSet rs = null;
 		PreparedStatement prepSt = null;
 		Product product = null;
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		try {
 			prepSt = conn.prepareStatement(SELECTID_QUERY);
 			prepSt.setLong(1, id);
@@ -65,7 +65,7 @@ public class MySQLProductDAO implements ProductDAO {
 				product.setPrice(rs.getInt("price"));
 				product.setCategory(rs.getInt("category"));
 			}
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -86,7 +86,7 @@ public class MySQLProductDAO implements ProductDAO {
 		List<Product> productList = new ArrayList<Product>();
 		ResultSet rs = null;
 		PreparedStatement prepSt = null;
-		Connection conn = SQLConectionHolder.getConnection();
+		Connection conn = conectionHolder.getConnection();
 		try {
 			prepSt = conn.prepareStatement(SELECTCATEGORY_QUERY);
 			prepSt.setInt(1, category);
@@ -101,7 +101,7 @@ public class MySQLProductDAO implements ProductDAO {
 				product.setCategory(rs.getInt("category"));
 				productList.add(product);
 			}
-			SQLConectionHolder.closeConnection();
+			conectionHolder.closeConnection();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -115,5 +115,13 @@ public class MySQLProductDAO implements ProductDAO {
 			}
 		}
 		return productList;
+	}
+
+	public SQLConectionHolder getConectionHolder() {
+		return conectionHolder;
+	}
+
+	public void setConectionHolder(SQLConectionHolder conectionHolder) {
+		this.conectionHolder = conectionHolder;
 	}
 }
