@@ -11,7 +11,7 @@
 			<div class="product-inner">
 				<figure class="product-image">
 					<a href="product-details.html"> <img
-						src="./productImage/${product.id}.JPG" alt="Products"></a>
+						src="<c:url value="./resources/productImage/${product.id}.JPG"/>" alt="Products"></a>
 				</figure>
 				<div class="product-info">
 					<h3 class="product-title mb--25">
@@ -22,10 +22,10 @@
 					</div>
 					<p class="product-short-description mb--20">${product.description}</p>
 					<div class="ft-product-action-list d-flex align-items-center">
-						<img width="20px" src="./img/-.png" id="imgMinus"
+						<img width="20px" src="<c:url value="./resources/img/-.png"/>" id="imgMinus"
 							onclick="minus(${product.id})" /> 
 							<span id="span${product.id}">1</span>
-						<img width="20px" src="./img/+.png" id="imgPlus"
+						<img width="20px" src="<c:url value="./resources//img/+.png"/>" id="imgPlus"
 							onclick="plus(${product.id})" /> 
 							<input type="submit" class="btn btn-size-md" value="add to cart"
 							id="buyButton${product.id}" value="Buy"
