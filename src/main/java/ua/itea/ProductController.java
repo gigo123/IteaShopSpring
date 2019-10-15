@@ -39,7 +39,7 @@ public class ProductController {
 
 	private ModelAndView getWorker(HttpSession session, String category) {
 		List<Product> products;
-		ModelAndView model = new ModelAndView("ProductsView");
+		ModelAndView model ;
 		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
 		ProductDAO pd=  (ProductDAO) context.getBean("ProductDAO");
@@ -49,6 +49,8 @@ public class ProductController {
 			int intCategory = Integer.parseInt(category);
 			products = pd.getProductByCategory(intCategory);
 		}
+		if(!pd.getError()) {
+			model = new ModelAndView("ProductsView");
 		if (session.getAttribute("login") != null) {
 			model.addObject("login", true);
 			model.addObject("userName", session.getAttribute("userName"));
@@ -63,6 +65,11 @@ public class ProductController {
 		model.addObject("productList", products);
 		model.addObject("page", "product");
 		return model;
+		}
+		else {
+			model = new ModelAndView("SqlErrorView");
+			return model;
+		}
 	}
 
 }

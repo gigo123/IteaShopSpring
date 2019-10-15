@@ -69,7 +69,7 @@ public class CartController {
 		return cartMapProcessed("change", Integer.parseInt(productToChange), Integer.parseInt(numberOfGoods));
 	}
 
-	@RequestMapping(method = RequestMethod.POST, params = { "productToRemove"})
+	@RequestMapping(method = RequestMethod.POST, params = { "productToRemove" })
 	@ResponseBody
 	public String productRemove(@RequestParam("productToRemove") String productToRemove) {
 		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -87,31 +87,34 @@ public class CartController {
 		}
 		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
-		ProductDAO pd=  (ProductDAO) context.getBean("ProductDAO");
+		ProductDAO pd = (ProductDAO) context.getBean("ProductDAO");
 		Product product = pd.getProductById(productId);
-		if (type.equals("buy")) {
-			if (cartMap.containsKey(product)) {
-				numberOfGoods = numberOfGoods + cartMap.get(product);
+		if (!pd.getError()) {
+			if (type.equals("buy")) {
+				if (cartMap.containsKey(product)) {
+					numberOfGoods = numberOfGoods + cartMap.get(product);
+				}
+				cartMap.put(product, numberOfGoods);
 			}
-			cartMap.put(product, numberOfGoods);
-		}
-		if (type.equals("remove")) {
-			if (cartMap.containsKey(product)) {
-				cartMap.remove(product);
+			if (type.equals("remove")) {
+				if (cartMap.containsKey(product)) {
+					cartMap.remove(product);
+				}
+			}
+			if (type.equals("change")) {
+				cartMap.put(product, numberOfGoods);
+			}
+			session.setAttribute("cart", cartMap);
+			int count = productsCount(cartMap);
+			session.setAttribute("cart_number", count);
+			if (type.equals("buy")) {
+				return String.valueOf(count);
+			} else {
+				return "{\"numberOfGoods\":\"" + session.getAttribute("cart_number").toString()
+						+ "\",\"totalCartSum\":\"" + totalCartSum() + "\"}";
 			}
 		}
-		if (type.equals("change")) {
-			cartMap.put(product, numberOfGoods);
-		}
-		session.setAttribute("cart", cartMap);
-		int count = productsCount(cartMap);
-		session.setAttribute("cart_number", count);
-		if (type.equals("buy")) {
-			return String.valueOf(count);
-		} else {
-			return "{\"numberOfGoods\":\"" + session.getAttribute("cart_number").toString() + "\",\"totalCartSum\":\""
-					+ totalCartSum() + "\"}";
-		}
+		return null;
 	}
 
 	private int productsCount(Map<Product, Integer> cartMap) {

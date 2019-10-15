@@ -71,7 +71,8 @@ public class LoginController {
 		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
 		UserDAO userDAO =  (UserDAO) context.getBean("UserDAO");
-		if (userDAO.checkLoginPasswords(login, password)) {
+		boolean cLogin = userDAO.checkLoginPasswords(login, password);
+		if (cLogin) {
 			errorCounter = 0;
 			loginFailded = false;
 			userName = userDAO.getUserByLogin(login).getName();
