@@ -18,8 +18,17 @@ public class MySQLUserDAO implements dao.UserDAO {
 	private final static String USER_UPDATE_QUERY = "UPDATE  users set  password= ?, name = ?, region = ?, gender = ? , comment = ?"
 			+ " WHERE  login = ?";
 	private final static String SALT = "miniMax";
-	SQLConectionHolder conectionHolder;
+	private SQLConectionHolder conectionHolder;
+	private boolean sqlError= false;
 	
+	public boolean isSqlError() {
+		return sqlError;
+	}
+
+	public void setSqlError(boolean sqlError) {
+		this.sqlError = sqlError;
+	}
+
 	public SQLConectionHolder getConectionHolder() {
 		return conectionHolder;
 	}
@@ -40,6 +49,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 		String pass_Query = "SELECT * FROM users WHERE login = ? AND  password = ?";
 		ResultSet rs = null;
 		PreparedStatement prepSt = null;
+		if(!conectionHolder.isError()){
 		try {
 			prepSt = conn.prepareStatement(pass_Query);
 			prepSt.setString(1, login);
@@ -51,6 +61,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 			}
 			conectionHolder.closeConnection();
 		} catch (SQLException e) {
+			sqlError=true;
 			e.printStackTrace();
 		} finally {
 			if (rs != null) {
@@ -68,7 +79,10 @@ public class MySQLUserDAO implements dao.UserDAO {
 				}
 			}
 		}
-
+		}
+		else {
+			sqlError=true;
+		}
 		return false;
 
 	}
@@ -77,6 +91,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 		ResultSet rs = null;
 		PreparedStatement prepSt = null;
 		Connection conn = conectionHolder.getConnection();
+		if(!conectionHolder.isError()){
 		try {
 			prepSt = conn.prepareStatement(SELECT_QUERY);
 			prepSt.setString(1, formEmail);
@@ -87,6 +102,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 			}
 			conectionHolder.closeConnection();
 		} catch (SQLException e) {
+			sqlError=true;
 			e.printStackTrace();
 		} finally {
 			if (rs != null) {
@@ -104,6 +120,10 @@ public class MySQLUserDAO implements dao.UserDAO {
 				}
 			}
 		}
+		}
+		else {
+			sqlError=true;
+		}
 		return false;
 	}
 
@@ -112,6 +132,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 		PreparedStatement prepSt = null;
 		User user = null;
 		Connection conn = conectionHolder.getConnection();
+		if(!conectionHolder.isError()){
 		try {
 			prepSt = conn.prepareStatement(SELECT_QUERY);
 			prepSt.setString(1, login);
@@ -130,6 +151,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 			}
 			conectionHolder.closeConnection();
 		} catch (SQLException e) {
+			sqlError=true;
 			e.printStackTrace();
 		} finally {
 			if (prepSt != null) {
@@ -140,6 +162,10 @@ public class MySQLUserDAO implements dao.UserDAO {
 				prepSt = null;
 			}
 		}
+		}
+		else {
+			sqlError=true;
+		}
 		return user;
 
 	}
@@ -147,6 +173,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 	public boolean insertUser(User user) {
 		Connection conn = conectionHolder.getConnection();
 		PreparedStatement prepSt = null;
+		if(!conectionHolder.isError()){
 		try {
 			prepSt = conn.prepareStatement(INSERT_QUERY);
 			prepSt.setString(1, user.getLogin());
@@ -158,6 +185,7 @@ public class MySQLUserDAO implements dao.UserDAO {
 			prepSt.execute();
 			conectionHolder.closeConnection();
 		} catch (SQLException e) {
+			sqlError=true;
 			e.printStackTrace();
 			return false;
 		} finally {
@@ -170,11 +198,19 @@ public class MySQLUserDAO implements dao.UserDAO {
 			}
 		}
 		return true;
+		}
+		else {
+			sqlError=true;
+			return false;
+		}
+		
+		
 	}
 
 	public boolean updateUser(User user, String login) {
 		Connection conn = conectionHolder.getConnection();
 		PreparedStatement prepSt = null;
+		if(!conectionHolder.isError()){
 		try {
 			prepSt = conn.prepareStatement(USER_UPDATE_QUERY);
 			prepSt.setString(1, hash(user.getPassword()));
@@ -199,6 +235,11 @@ public class MySQLUserDAO implements dao.UserDAO {
 		}
 		return true;
 	}
+	else {
+		sqlError=true;
+		return false;
+	}
+	}
 
 	private String hash(String password) {
 		try {
@@ -210,5 +251,10 @@ public class MySQLUserDAO implements dao.UserDAO {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public boolean getError() {
+		return sqlError;
 	}
 }
