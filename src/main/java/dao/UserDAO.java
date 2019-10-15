@@ -9,4 +9,5 @@ public interface UserDAO {
 	public boolean selectEmail(String formEmail);
 	public boolean insertUser(User user);
 	public User getUserByLogin(String login) ;
+	public boolean getError();
 }
