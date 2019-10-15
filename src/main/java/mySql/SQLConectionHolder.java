@@ -6,6 +6,25 @@ import java.sql.SQLException;
 
 public class SQLConectionHolder {
 	private static Connection conn;
+	private boolean error = false;
+	private String errorMessage; 
+	
+	
+	public boolean isError() {
+		return error;
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
 
 	private String connString;
 	
@@ -23,13 +42,17 @@ public class SQLConectionHolder {
 				Class.forName("com.mysql.jdbc.Driver").newInstance();
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/iteashop?" + "user=root&password=");
 				conn = DriverManager.getConnection(connString);
+				error= false;
 			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
-				System.out.println(ex.getMessage());
+				error= true;
+				errorMessage = "DataBase conection error";
+				System.out.println("DataBase conection error");
 			} catch (SQLException ex) {
-				System.out.println("Failed");
-				System.out.println("SQLException: " + ex.getMessage());
-				System.out.println("SQLState: " + ex.getSQLState());
-				System.out.println("VendorError: " + ex.getErrorCode());
+				error= true;
+				errorMessage = "SQLException: " + ex.getMessage();
+				errorMessage +=" SQLState: " + ex.getSQLState();
+				errorMessage +=" VendorError: " + ex.getErrorCode();
+				System.out.println("SQL error");
 			}
 		return conn;
 
