@@ -4,12 +4,13 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
-<title>Beck - Furniture eCommerce Bootstrap 4 Template</title>
+<title>apples from Taras</title>
 <meta name="description" content="">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!-- Favicons -->
-<link rel="shortcut icon" href= "<c:url value="/resources/img/favicon.ico" />" type="image/x-icon">
+<link rel="shortcut icon"
+	href="<c:url value="/resources/img/favicon.ico" />" type="image/x-icon">
 <link rel="apple-touch-icon" href="img/icon.png">
 
 <!-- ************************* CSS Files ************************* -->
@@ -18,22 +19,10 @@
 <link rel="stylesheet" href="<c:url value="/resources/css/vendor.css"/>" />
 
 <!-- style css -->
-<link rel="stylesheet" href="<c:url value="/resources/css/main.css"/>"/>
+<link rel="stylesheet" href="<c:url value="/resources/css/main.css"/>" />
 </head>
 
 <body>
-
-	<!-- Preloader Start -->
-	<div class="ft-preloader active">
-		<div
-			class="ft-preloader-inner h-100 d-flex align-items-center justify-content-center">
-			<div class="ft-child ft-bounce1"></div>
-			<div class="ft-child ft-bounce2"></div>
-			<div class="ft-child ft-bounce3"></div>
-		</div>
-	</div>
-	<!-- Preloader End -->
-
 	<!-- Main Wrapper Start -->
 	<div class="wrapper">
 		<!-- Header Start -->
@@ -59,12 +48,6 @@
 									<div class="header__main-right">
 										<div class="header-toolbar-wrap">
 											<div class="header-toolbar">
-												<div class="header-toolbar__item header-toolbar--search-btn">
-													<a href="#searchForm"
-														class="header-toolbar__btn toolbar-btn"> <i
-														class="la la-search"></i>
-													</a>
-												</div>
 												<div class="header-toolbar__item d-block d-lg-none">
 													<a href="#offcanvasMenu"
 														class="header-toolbar__btn toolbar-btn menu-btn">
@@ -84,4 +67,8 @@
 				</div>
 			</div>
 		</header>
+		<!-- Breadcrumb area Start -->
+		<section class="page-title-area bg-image ptb--80"
+			data-bg-image="img/bg/page_title_bg.jpg"></section>
+		<!-- Breadcrumb area End -->
 		<!-- Header End -->

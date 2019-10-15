@@ -4,7 +4,7 @@
 <%@ page isELIgnored="false"%>
 <ul class="mainmenu">
 	<li class="mainmenu__item menu-item-has-children"><a
-		href="./product" class="mainmenu__link"> <span class="mm-text">Home</span>
+		href="./" class="mainmenu__link"> <span class="mm-text">Home</span>
 	</a></li>
 	<li class="mainmenu__item menu-item-has-children megamenu-holder">
 		<a href="./product" class="mainmenu__link"> <span class="mm-text">Shop</span>

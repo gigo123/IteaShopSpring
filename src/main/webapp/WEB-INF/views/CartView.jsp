@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page isELIgnored="false"%>
 <%@ include file="/WEB-INF/include/HeaderView.jsp"%>
-<%@ include file="/WEB-INF/include/BreadcrumbView.jsp"%>
 <%@ include file="/WEB-INF/include/SideMenuView.jsp"%>
 <!-- Main Content Wrapper Start -->
 <div class="col-9">
