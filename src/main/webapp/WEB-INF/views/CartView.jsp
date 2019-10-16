@@ -22,7 +22,8 @@
 				<c:forEach var="product" items="${requestScope.productList}">
 					<tr id="productRow${product.key.id}">
 						<td class="product-thumbnail text-left"><img
-							src="<c:url value="./resources/productImage/${product.key.id}.JPG"/>" alt="Product Thumnail"></td>
+							src="<c:url value="./resources/productImage/${product.key.id}.JPG"/>"
+							alt="Product Thumnail"></td>
 						<td class="product-name text-left wide-column">
 							<h3>
 								<a href="product-details.html">${product.key.name}</a>
@@ -35,8 +36,8 @@
 							src="<c:url value="./resources/img/-.png"/>" id="imgMinus"
 							onclick="minus(${product.key.id})" /> <span
 							id="span${product.key.id}">${product.value}</span> <img
-							width="20px" src="<c:url value="./resources//img/+.png"/>" id="imgPlus"
-							onclick="plus(${product.key.id})" /></td>
+							width="20px" src="<c:url value="./resources//img/+.png"/>"
+							id="imgPlus" onclick="plus(${product.key.id})" /></td>
 						<td class="product-total-price"><span
 							class="product-price-wrapper"> <span class="money"
 								id="totalPrice${product.key.id}">${product.value*product.key.price}</span>
@@ -70,9 +71,8 @@
 			</div>
 		</div>
 	</div>
-	<a href="checkout.html"
-		class="btn btn-size-md btn-shape-square btn-fullwidth"> Proceed To
-		Checkout </a>
+	<div class="btn btn-size-md btn-shape-square btn-fullwidth"
+		id="checkOut" onclick="confirmOrder()">Proceed To Checkout</div>
 </div>
 <script>
 // script for numbers
@@ -128,6 +128,15 @@
 					}
 				});
 	}
+	function confirmOrder() {
+		var number = document.getElementById("totalSum").innerHTML;
+		if(number ==0 ){
+			alert("you cart is empty");
+		}
+		else{
+			 window.location.href = "./checkout";
+		}
+}
 </script>
 <!--  close div of SideMenuView -->
 </div>
