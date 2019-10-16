@@ -13,7 +13,7 @@
 							<div>
 								<ul class="breadcrumb">
 									<li><a href="/">Home</a></li>
-									<li class="current"><span>Login</span></li>
+									<li class="current"><span>/${page}</span></li>
 								</ul>
 							</div>
 							<div class="cart-side-menu">
@@ -22,17 +22,25 @@
 								</c:if>
 								you have <span id="numberGoods">${items}</span> goods in cart
 							</div>
-							<a class="nav-link active" href="./product">Home</a> <a
-								class="nav-link" href="./product" aria-controls="orders"
-								aria-selected="true">Shop</a> <a class="nav-link"
-								href="./product?category=1" aria-controls="downloads"
-								aria-selected="true">Iphone</a> <a class="nav-link"
-								href="./product?category=2" aria-controls="addresses"
-								aria-selected="true">Ipad</a> <a class="nav-link"
-								href="./product?category=3" aria-controls="accountdetails"
-								aria-selected="true">Watch</a> <a class="nav-link" href="./cart">Cart</a>
-							<a class="nav-link" href="./login">Login</a> <a class="nav-link"
-								href="./register">Register</a>
+							<a class="nav-link ${page!=null?page.equals("main")?"active": "":""}"
+							href="./">Home</a> 
+							<a class="nav-link ${page!=null?page.equals("product")?"active": "":""}"
+							 href="./product" aria-selected="true">Shop</a> 
+							<a class="nav-link ${page!=null?page.equals("1")?"active": "":""}"
+							 href="./product?category=1" 
+							aria-selected="true">Iphone</a> 
+							<a class="nav-link ${page!=null?page.equals("2")?"active": "":""}"
+							href="./product?category=2" 
+							aria-selected="true">Ipad</a>
+							<a class="nav-link ${page!=null?page.equals("3")?"active": "":""}"
+							href="./product?category=3" 
+							aria-selected="true">Watch</a> 
+							<a class="nav-link ${page!=null?page.equals("cart")?"active": "":""}"
+							href="./cart">Cart</a>
+							<a class="nav-link ${page!=null?page.equals("login")?"active": "":""}"
+							href="./login">Login</a> 
+							<a class="nav-link  ${page!=null?page.equals("register")?"active": "":""}"
+							href="./register">Register</a>
 						</div>
 					</div>
 				</div>
