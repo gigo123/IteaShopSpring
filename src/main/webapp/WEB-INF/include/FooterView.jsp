@@ -9,7 +9,7 @@
                             <div class="footer-widget">
                                 <div class="textwidget">
                                     <figure class="footer-logo mb--30">
-                                        <img src="img/logo/logo.png" alt="Logo">
+                                        <img src="<c:url value="/resources/img/logo.png"/>" alt="Logo">
                                     </figure>
                                     <p>I offer to  you the best selection of products  of Apple in your area </p>
                                 </div>

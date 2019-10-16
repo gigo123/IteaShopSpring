@@ -36,7 +36,7 @@
 									<div class="header__main-left">
 										<div class="logo">
 											<a href="index.html" class="logo--normal"> <img
-												src="img/logo/logo.png" alt="Logo">
+												src="<c:url value="/resources/img/logo.png"/>" alt="Logo">
 											</a>
 										</div>
 									</div>
@@ -69,6 +69,6 @@
 		</header>
 		<!-- Breadcrumb area Start -->
 		<section class="page-title-area bg-image ptb--80"
-			data-bg-image="img/bg/page_title_bg.jpg"></section>
+			data-bg-image="<c:url value="/resources/img/iponeX.JPG"/>"></section>
 		<!-- Breadcrumb area End -->
 		<!-- Header End -->
