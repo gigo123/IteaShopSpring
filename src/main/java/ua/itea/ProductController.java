@@ -43,14 +43,17 @@ public class ProductController {
 		@SuppressWarnings("resource")
 		ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
 		ProductDAO pd=  (ProductDAO) context.getBean("ProductDAO");
+		model = new ModelAndView("ProductsView");
 		if (category.equals("")) {
 			products = pd.getProductList();
+			model.addObject("page", "product");
 		} else {
 			int intCategory = Integer.parseInt(category);
 			products = pd.getProductByCategory(intCategory);
+			model.addObject("page", category);
 		}
 		if(!pd.getError()) {
-			model = new ModelAndView("ProductsView");
+			
 		if (session.getAttribute("login") != null) {
 			model.addObject("login", true);
 			model.addObject("userName", session.getAttribute("userName"));
@@ -63,7 +66,6 @@ public class ProductController {
 			model.addObject("items", 0);
 		}
 		model.addObject("productList", products);
-		model.addObject("page", "product");
 		return model;
 		}
 		else {
