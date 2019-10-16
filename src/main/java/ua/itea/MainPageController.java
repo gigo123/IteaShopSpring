@@ -27,6 +27,7 @@ public class MainPageController {
 		} else {
 			model.addObject("items", 0);
 		}
+		model.addObject("page", "main");
 		return model;
 	}
 
