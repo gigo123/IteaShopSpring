@@ -5,7 +5,7 @@
 <%@ include file="/WEB-INF/include/HeaderView.jsp"%>
 <%@ include file="/WEB-INF/include/SideMenuView.jsp"%>
 <div class="col-9 mb--50">
-<div class="login-box">
+<div class="login-box" class="form__label">
 I offer to you the best selection of products of Apple in your area 
 </div>
 </div>
