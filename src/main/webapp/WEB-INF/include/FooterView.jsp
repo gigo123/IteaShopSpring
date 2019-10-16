@@ -20,7 +20,7 @@
                                 <h3 class="widget-title mb--35 mb-sm--20">Company</h3>
                                 <div class="footer-widget">
                                     <ul class="footer-menu">
-                                        <li><a href="/info">About Us</a></li>
+                                        <li><a href="./info">About Us</a></li>
                                         <li><a href="#">Blogs</a></li>
                                         <li><a href="#">Careers</a></li>
                                         <li><a href="/info">Contact</a></li>
