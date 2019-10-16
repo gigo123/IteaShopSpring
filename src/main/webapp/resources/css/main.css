@@ -5476,6 +5476,7 @@ scale
 	.user-dashboard-tab__head .nav-link.active, .user-dashboard-tab__head .nav-link:hover
 	{
 	background-color: #ff5151;
+	color:#ffffff;
 }
 
 .icon-outline {
