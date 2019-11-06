@@ -20,11 +20,8 @@ import models.Product;
 @Controller
 @RequestMapping("/cart")
 public class CartController {
-	HttpSession sessionInController;
-
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView getCartList(HttpSession session) {
-		sessionInController = session;
 		ModelAndView model = new ModelAndView("CartView");
 		if (session.getAttribute("login") != null) {
 			model.addObject("login", true);
