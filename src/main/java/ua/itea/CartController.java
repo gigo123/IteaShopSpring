@@ -26,12 +26,11 @@ import mySql.MySQLDAOFactory;
 @Controller
 @RequestMapping("/cart")
 public class CartController {
-	HttpSession session;
+	HttpSession sessionInController;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView getCartList() {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		session = attr.getRequest().getSession(true); // true == allow create
+	public ModelAndView getCartList(HttpSession session) {
+		sessionInController = session;
 		ModelAndView model = new ModelAndView("CartView");
 		if (session.getAttribute("login") != null) {
 			model.addObject("login", true);
@@ -54,31 +53,27 @@ public class CartController {
 	@RequestMapping(method = RequestMethod.POST, params = { "productToBuy", "numberOfGoods" })
 	@ResponseBody
 	public String productBuy(@RequestParam("productToBuy") String productToBuy,
-			@RequestParam("numberOfGoods") String numberOfGoods) {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		session = attr.getRequest().getSession(true); // true == allow create
-		return cartMapProcessed("buy", Integer.parseInt(productToBuy), Integer.parseInt(numberOfGoods));
+			@RequestParam("numberOfGoods") String numberOfGoods,HttpSession session) {
+		return cartMapProcessed("buy", Integer.parseInt(productToBuy), 
+				Integer.parseInt(numberOfGoods) ,session);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, params = { "productToChange", "numberOfGoods" })
 	@ResponseBody
 	public String productBuyCart(@RequestParam("productToChange") String productToChange,
-			@RequestParam("numberOfGoods") String numberOfGoods) {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		session = attr.getRequest().getSession(true); // true == allow create
-		return cartMapProcessed("change", Integer.parseInt(productToChange), Integer.parseInt(numberOfGoods));
+			@RequestParam("numberOfGoods") String numberOfGoods, HttpSession session) {
+		return cartMapProcessed("change", Integer.parseInt(productToChange), 
+				Integer.parseInt(numberOfGoods), session);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, params = { "productToRemove" })
 	@ResponseBody
-	public String productRemove(@RequestParam("productToRemove") String productToRemove) {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		session = attr.getRequest().getSession(true); // true == allow create
-		return cartMapProcessed("remove", Integer.parseInt(productToRemove), 0);
+	public String productRemove(@RequestParam("productToRemove") String productToRemove , HttpSession session) {
+		return cartMapProcessed("remove", Integer.parseInt(productToRemove), 0, session);
 	}
 
 	@SuppressWarnings("unchecked")
-	private String cartMapProcessed(String type, long productId, int numberOfGoods) {
+	private String cartMapProcessed(String type, long productId, int numberOfGoods , HttpSession session) {
 		Map<Product, Integer> cartMap;
 		if (session.getAttribute("cart") != null) {
 			cartMap = (Map<Product, Integer>) session.getAttribute("cart");
@@ -111,7 +106,7 @@ public class CartController {
 				return String.valueOf(count);
 			} else {
 				return "{\"numberOfGoods\":\"" + session.getAttribute("cart_number").toString()
-						+ "\",\"totalCartSum\":\"" + totalCartSum() + "\"}";
+						+ "\",\"totalCartSum\":\"" + totalCartSum(session) + "\"}";
 			}
 		}
 		return null;
@@ -136,7 +131,7 @@ public class CartController {
 		return sum;
 	}
 
-	private int totalCartSum() {
+	private int totalCartSum(HttpSession session) {
 		Map<Product, Integer> cartMap;
 		int sum = 0;
 		cartMap = (Map<Product, Integer>) session.getAttribute("cart");
