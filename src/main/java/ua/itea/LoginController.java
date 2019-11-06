@@ -2,20 +2,15 @@ package ua.itea;
 
 import java.util.Date;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
-import dao.DaoFactory;
 import dao.UserDAO;
-import mySql.MySQLDAOFactory;
+
 
 @Controller
 @RequestMapping("/login")
@@ -27,9 +22,7 @@ public class LoginController {
 	String userName;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView loginGet() {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+	public ModelAndView loginGet(HttpSession session) {
 		ModelAndView model;
 		if (formBlocked) {
 			checkUblock();
@@ -52,18 +45,15 @@ public class LoginController {
 
 	@RequestMapping(method = RequestMethod.POST, params = { "login", "password" })
 	public ModelAndView loginPost(@RequestParam("login") String login, 
-			@RequestParam("password") String password) {
+			@RequestParam("password") String password , HttpSession session) {
 		if (!login.equals("") && !password.equals("")) {
 			if (!checkCredials(login, password)) {
-				ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder
-						.currentRequestAttributes();
-				HttpSession session = attr.getRequest().getSession(true); // true == allow create
 				session.setAttribute("login", login);
 				session.setAttribute("userName", userName);
 				return new ModelAndView("redirect:/");
 			}
 		}
-		return loginGet();
+		return loginGet(session);
 	}
 
 	private boolean checkCredials(String login, String password) {

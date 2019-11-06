@@ -1,39 +1,29 @@
 package ua.itea;
 
 import java.util.List;
-
 import javax.servlet.http.HttpSession;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
-import dao.DaoFactory;
 import dao.ProductDAO;
 import models.Product;
-import mySql.MySQLDAOFactory;
+
 
 @Controller
 @RequestMapping("/product")
 public class ProductController {
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView getProductList() {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+	public ModelAndView getProductList(HttpSession session) {
 		return getWorker(session, "");
 	}
 
 	@RequestMapping(method = RequestMethod.GET, params = { "category" })
-	public ModelAndView getProductListCategory(@RequestParam("category") String category) {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+	public ModelAndView getProductListCategory(@RequestParam("category") String category,HttpSession session) {
 		return getWorker(session, category);
 	}
 

@@ -2,22 +2,16 @@ package ua.itea;
 
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpSession;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
-import dao.DaoFactory;
-import dao.ProductDAO;
 import dao.UserDAO;
 import models.User;
-import mySql.MySQLDAOFactory;
+
 
 @Controller
 @RequestMapping("/register")
@@ -28,9 +22,7 @@ public class RegisterController {
 	private UserDAO userDAO;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView getRegisterForm() {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+	public ModelAndView getRegisterForm(HttpSession session) {
 		ModelAndView model = new ModelAndView("RegisterView");
 		if (error) {
 			error = false;
@@ -64,9 +56,8 @@ public class RegisterController {
 	public ModelAndView registerFormPOST(@RequestParam("login") String login, @RequestParam("password") String password,
 			@RequestParam("password2") String password2, @RequestParam("name") String name,
 			@RequestParam("region") String region, @RequestParam("gender") String gender,
-			@RequestParam("comment") String comment, @RequestParam("acceptOffer") String acceptOffer) {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+			@RequestParam("comment") String comment, 
+			@RequestParam("acceptOffer") String acceptOffer ,HttpSession session) {
 		error = false;
 		errorText = new StringBuilder("<ul>");
 		user = new User(login, password, name, region, convertGenderToBool(gender), comment);
@@ -92,7 +83,7 @@ public class RegisterController {
 				return new ModelAndView("redirect:/");
 			}
 		}
-		return getRegisterForm();
+		return getRegisterForm(session);
 
 	}
 

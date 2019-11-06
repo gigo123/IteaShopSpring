@@ -5,18 +5,13 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/checkout")
 public class CheckOutController {
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView displayCheckOut() {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-		HttpSession session = attr.getRequest().getSession(true); // true == allow create
+	public ModelAndView displayCheckOut(HttpSession session) {
 		ModelAndView model = new ModelAndView("CheckOutView");
 		if (session.getAttribute("login") != null) {
 			model.addObject("login", true);

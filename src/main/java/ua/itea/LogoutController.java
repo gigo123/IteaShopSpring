@@ -13,12 +13,11 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/logout")
 public class LogoutController {
 	@RequestMapping(method = RequestMethod.GET)
-	public ModelAndView logOut() {
-		ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder
-				.currentRequestAttributes();
-		HttpSession session = attr.getRequest().getSession(true); 
+	public ModelAndView logOut(HttpSession session) {
 		if (session.getAttribute("login") != null) {
 			session.invalidate();
+			ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder
+					.currentRequestAttributes();
 			session = attr.getRequest().getSession(true);
 		}
 		return new ModelAndView("redirect:/");
