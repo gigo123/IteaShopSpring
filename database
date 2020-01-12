@@ -1,0 +1,18 @@
+This file describes the database structure for the Itea Online Store project.
+ The database name is the Iteashop. The database contains two tables,  users and products. The dump of  test dataset is in the iteashop.sql file.
+
+ Description of the users table -  6 fields
+id (int) - counter auto-increment
+login (varchar (50)) - user login (valid email)
+password (varchar (100)) - Hashed user password
+name (varchar (50)) - The display name of the user
+region (varchar (50)) –– user region (area)
+gender (bool) - gender (0 - female, 1 - male)
+comment (varchar (200)) - any text
+
+Product table description 5 fields
+id (int) - counter auto-increment
+name (varchar (50)) - the name of the product
+description (text) - description of the product
+price (int) - the price of the product
+category (int) - product category (0 phones, 1- tablets, 2 - watches)
